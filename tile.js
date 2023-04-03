@@ -7,6 +7,13 @@ export class Tile {
         gridElement.append(this.tileElement);
     }
 
+    setValue(value) {
+        this.value = value;
+        this.tileElement.textContent = value;
+        const bgLightness = 100 - Math.log2(value) * 9;
+        this.tileElement.style.setProperty("--bg-lightness", `${bgLightness}%`);
+        this.tileElement.style.setProperty("--text-lightness", `${bgLightness < 50 ? 90 : 10}%`);
+    } 
 
     setXY(x, y) {
         this.x = x;
@@ -15,16 +22,23 @@ export class Tile {
         this.tileElement.style.setProperty("--y", y);
     }
 
-    setValue(value) {
-        this.value = value;
-        this.tileElement.textContent = value;
-        const bgLightness = 100 - Math.log2(value) * 9;
-        this.tileElement.style.setProperty("--bg-lightness", `${bgLightness}%`);
-        this.tileElement.style.setProperty("--text-lightness", `${bgLightness < 50 ? 90 : 10}%`);
-
-    } 
 
     removeFromDOM() {
         this.tileElement.remove()
     }
+
+
+    waitForTransitionEnd() {
+        return new Promise(resolve => {
+            this.tileElement.addEventListener("transitionend", resolve, {once: true});
+        })
+    }
+
+    waitForAnimationEnd() {
+        return new Promises(resolve => {
+            this.tileElement.addEventListener("tanimationend", resolve, {once: true});
+        })
+    }
+
+
 }
